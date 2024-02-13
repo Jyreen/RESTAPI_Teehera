@@ -57,6 +57,22 @@ export const create = async (userData: UnitUser):  Promise<UnitUser | null> =>  
     return user;
 };
 
+export const findByName = async (name: string): Promise<UnitUser | null> => {
+    
+    const allUsers = await findAll();
+    
+    return allUsers.find(user => user.username === name) || null;
+  
+};
+
+export const findByEmail = async (email: string): Promise<UnitUser | null> => {
+    
+    const allUsers = await findAll();
+    
+    return allUsers.find(user => user.email === email) || null;
+  
+};
+
 export const findbyEmail = async (user_email : string): Promise<null | UnitUser> => {
 
     const allUsers = await findAll();

@@ -127,3 +127,45 @@ userRouter.delete("/user/:id", async (req : Request, res : Response) => {
     }
 })
 
+userRouter.get("/users/search", async (req: Request, res: Response) => {
+    try {
+        const { name, email } = req.query;
+
+        if (!name && !email) {
+            const allUsers: UnitUser[] = await database.findAll();
+            return res.status(StatusCodes.OK).json({ allUsers });
+        }
+
+        const allUsers: UnitUser[] = await database.findAll();
+
+        let filteredUsers: UnitUser[] = [];
+
+        if (name && email) {
+            const partialName: string = name.toString().toLowerCase();
+            const partialEmail: string = email.toString().toLowerCase();
+
+            const matchedUsers = allUsers.filter(user =>
+                user.username.toLowerCase().includes(partialName) &&
+                user.email.toLowerCase().includes(partialEmail)
+            );
+
+            filteredUsers.push(...matchedUsers);
+        } else if (name) {
+            const partialName: string = name.toString().toLowerCase();
+            const matchedUsers = allUsers.filter(user =>
+                user.username.toLowerCase().includes(partialName)
+            );
+            filteredUsers.push(...matchedUsers);
+        } else if (email) {
+            const partialEmail: string = email.toString().toLowerCase();
+            const matchedUsers = allUsers.filter(user =>
+                user.email.toLowerCase().includes(partialEmail)
+            );
+            filteredUsers.push(...matchedUsers);
+        }
+
+        return res.status(StatusCodes.OK).json(filteredUsers);
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
+    }
+})
