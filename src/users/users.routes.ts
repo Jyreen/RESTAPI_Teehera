@@ -127,3 +127,20 @@ userRouter.delete("/user/:id", async (req : Request, res : Response) => {
     }
 })
 
+userRouter.get("/users/search",async (req : Request, res : Response) => {
+    try {
+        const { query } = req.query;
+
+        if (!query) {
+            const allUsers: UnitUser[] = await database.findAll();
+            return res.status(StatusCodes.OK).json({ total_users: allUsers.length, users: allUsers });
+        }
+
+        //return [] if not found
+
+        
+
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
+    }
+})
