@@ -21,7 +21,8 @@ userRouter.get ("/users", async (req : Request, res : Response) => {
 
 userRouter.get("/user/:id", async (req : Request, res : Response) => {
     try{
-        const user : UnitUser = await database.findOne(req.params.id)
+        const userId:string =req.params.id
+        const user: UnitUser | null = await database.findOne(userId)
 
         if (!user) {
             return res.status(StatusCodes.NOT_FOUND).json({error : `User not found!`})
@@ -41,7 +42,7 @@ userRouter.post("/register", async(req : Request, res : Response) => {
             return res.status(StatusCodes.BAD_REQUEST).json({error : `Please provide all the required parameters..`})
         }
 
-        const user = await database.findbyEmail(email)
+        const user = await database.findByEmail(email)
 
         if (user) {
             return res.status(StatusCodes.BAD_REQUEST).json({error: `This email has already been registered..`})
@@ -64,7 +65,7 @@ userRouter.post("/login", async (req : Request, res : Response) => {
             return res.status(StatusCodes.BAD_REQUEST).json({error : 'Please provide all the required parameters..'})
         }
 
-        const user = await database.findbyEmail(email)
+        const user = await database.findByEmail(email)
 
         if(!user) {
             return res.status(StatusCodes.NOT_FOUND).json({error: 'No user exists with the email provided..'})
